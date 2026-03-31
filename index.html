@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heat & Seat</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--bg:#0b0f1a;
+--card:#121826;
+--accent:linear-gradient(135deg,#22c55e,#9333ea);
+}
+
+body{
+margin:0;
+font-family:Poppins;
+background:var(--bg);
+color:white;
+}
+
+/* HEADER */
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+}
+
+h1{
+font-size:30px;
+background:var(--accent);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+.menu{
+font-size:20px;
+cursor:pointer;
+}
+
+/* ANIMATED TEXT */
+.tagline{
+text-align:center;
+font-size:14px;
+opacity:.8;
+margin-top:-10px;
+}
+
+.fade-word{
+display:inline-block;
+transition:opacity .5s;
+}
+
+/* PRODUCTS */
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:12px;
+padding:10px;
+}
+
+.card{
+background:var(--card);
+border-radius:20px;
+padding:10px;
+}
+.card img{
+width:100%;
+border-radius:15px;
+}
+.add{
+width:100%;
+padding:10px;
+border:none;
+border-radius:12px;
+background:var(--accent);
+color:white;
+}
+
+/* CART BUTTON */
+.cart-btn{
+position:fixed;
+bottom:20px;
+right:20px;
+padding:16px;
+border-radius:50%;
+background:var(--accent);
+cursor:pointer;
+}
+
+/* DRAWER */
+.cart{
+position:fixed;
+bottom:-100%;
+left:0;
+width:100%;
+height:85%;
+background:var(--card);
+border-radius:20px 20px 0 0;
+transition:.4s;
+padding:15px;
+overflow:auto;
+}
+.cart.active{bottom:0}
+
+/* HELP PAGE */
+.page{
+position:fixed;
+top:0;
+left:100%;
+width:100%;
+height:100%;
+background:var(--bg);
+transition:.4s;
+padding:20px;
+}
+.page.active{left:0}
+
+/* NAV BAR */
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+}
+
+/* FORM */
+input,textarea{
+width:100%;
+padding:10px;
+margin:6px 0;
+border:none;
+border-radius:10px;
+background:#1e293b;
+color:white;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+background:var(--accent);
+color:white;
+}
+
+/* SUCCESS */
+.success{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#000c;
+display:none;
+justify-content:center;
+align-items:center;
+font-size:22px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="menu" onclick="openHelp()">⋮</div>
+<h1>Heat & Seat</h1>
+<div></div>
+</header>
+
+<div class="tagline">
+Experience <span id="changingWord" class="fade-word">Cool</span>
+</div>
+
+<div class="products" id="products"></div>
+
+<div class="cart-btn" onclick="toggleCart()">🛒</div>
+
+<!-- CART -->
+<div class="cart" id="cart">
+
+<div class="topbar">
+<div onclick="toggleCart()">⬅ Back</div>
+<div onclick="location.reload()">🏠 Home</div>
+</div>
+
+<h2>Your Cart</h2>
+<div id="cartItems"></div>
+<h3>Total ₹<span id="total"></span></h3>
+
+<form id="form" action="https://formspree.io/f/xjgprogr" method="POST">
+
+<input name="name" id="name" required placeholder="Full Name">
+<input name="contact" id="contact" required placeholder="Phone / Instagram">
+<textarea name="address" id="address" required placeholder="Address"></textarea>
+<input name="time" id="time" placeholder="Preferred Time">
+
+<label><input type="checkbox" required> I am above 18</label>
+
+<input type="hidden" name="order_details" id="orderData">
+
+<button>Place Order</button>
+
+</form>
+
+</div>
+
+<!-- HELP -->
+<div class="page" id="help">
+
+<div class="topbar">
+<div onclick="closeHelp()">⬅ Back</div>
+<div onclick="location.reload()">🏠 Home</div>
+</div>
+
+<h2>Help & Contact</h2>
+
+<p onclick="window.open('https://wa.me/916201276342')">📱 WhatsApp</p>
+<p onclick="window.open('https://instagram.com/Logan_cuban')">📸 Logan_cuban</p>
+
+</div>
+
+<!-- SUCCESS -->
+<div class="success" id="success">🎉 Order Placed!</div>
+
+<script>
+
+const words=["Cool","Hell YEhhh!!","CrazYYY!!","FuNN!!","NuT Breaker@#$","Concole !@#$"];
+let index=0;
+
+setInterval(()=>{
+let el=document.getElementById("changingWord");
+el.style.opacity=0;
+setTimeout(()=>{
+index=(index+1)%words.length;
+el.innerText=words[index];
+el.style.opacity=1;
+},500);
+},2000);
+
+/* PRODUCTS */
+const products=[
+{name:"Heeat (3g)",price:50,img:"https://i.ibb.co/hR2T56cx/50rs-Pudiya.jpg"},
+{name:"Hoiunt Roll",price:30,img:"https://i.ibb.co/dw7gZ1MH/Joint.jpg"},
+{name:"GovindPur Heeat",price:600,img:"https://i.ibb.co/tTt9shS3/Green.jpg"},
+{name:"Hybrid Seed",price:80,img:"https://i.ibb.co/qLmTXFDc/Weed-Seed.jpg"}
+];
+
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+
+function render(){
+let box=document.getElementById("products");
+box.innerHTML="";
+products.forEach((p,i)=>{
+box.innerHTML+=`
+<div class="card">
+<img src="${p.img}">
+<h4>${p.name}</h4>
+<p>₹${p.price}</p>
+<button class="add" onclick="add(${i})">Add</button>
+</div>`;
+});
+}
+
+function add(i){
+navigator.vibrate?.(50);
+let item=cart.find(c=>c.name===products[i].name);
+if(item)item.qty++;
+else cart.push({...products[i],qty:1});
+save();
+}
+
+function save(){
+localStorage.setItem("cart",JSON.stringify(cart));
+drawCart();
+}
+
+function toggleCart(){
+document.getElementById("cart").classList.toggle("active");
+drawCart();
+}
+
+function drawCart(){
+let html="",total=0;
+cart.forEach((c,i)=>{
+total+=c.price*c.qty;
+html+=`${c.name} x${c.qty}<br>`;
+});
+document.getElementById("cartItems").innerHTML=html;
+document.getElementById("total").innerText=total;
+}
+
+document.getElementById("form").onsubmit=function(e){
+
+if(cart.length===0){
+alert("Cart empty");
+e.preventDefault();
+return;
+}
+
+let total=0,txt="Order ID: "+Date.now()+"\n\n";
+
+cart.forEach(c=>{
+let t=c.price*c.qty;
+total+=t;
+txt+=`${c.name} x${c.qty} = ₹${t}\n`;
+});
+
+txt+="\nTotal ₹"+total;
+
+document.getElementById("orderData").value=txt;
+
+setTimeout(()=>{
+cart=[];
+localStorage.removeItem("cart");
+document.getElementById("success").style.display="flex";
+setTimeout(()=>location.reload(),2000);
+},1000);
+
+};
+
+function openHelp(){
+document.getElementById("help").classList.add("active");
+}
+function closeHelp(){
+document.getElementById("help").classList.remove("active");
+}
+
+render();
+drawCart();
+
+</script>
+
+</body>
+</html>
